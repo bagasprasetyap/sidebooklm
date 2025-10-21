@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "SidebookLM",
+  "description": "Generate on-device quizzes and flashcards from PDFs using Gemini Nano.",
+  "version": "0.1.0",
+  "minimum_chrome_version": "127",
+  "action": {
+    "default_title": "SidebookLM"
+  },
+  "background": {
+    "service_worker": "background/background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "sidePanel"
+  ],
+  "side_panel": {
+    "default_path": "sidepanel/index.html"
+  },
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "pdf/lib/pdf.worker.min.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

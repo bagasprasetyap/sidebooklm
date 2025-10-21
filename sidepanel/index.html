@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="../styles/reset.css" />
+    <link rel="stylesheet" href="./panel.css" />
+    <title>SidebookLM</title>
+  </head>
+  <body>
+    <header class="panel-header">
+      <div class="panel-header__branding">
+        <img
+          src="../assets/icons/icon48.png"
+          alt="SidebookLM"
+          class="panel-header__logo"
+        />
+        <div>
+          <h1 class="panel-header__title">SidebookLM</h1>
+          <p class="panel-header__subtitle">No internet. No limits. — powered by Gemini Nano.</p>
+        </div>
+      </div>
+      <label class="upload-button">
+        <input
+          id="pdf-input"
+          type="file"
+          accept="application/pdf"
+          hidden
+        />
+        <span id="pdf-input-label">Upload PDF</span>
+      </label>
+    </header>
+
+    <section id="status-area" class="status-area" role="status" aria-live="polite">
+      <div class="status-indicator">
+        <div id="status-spinner" class="status-spinner hidden" aria-hidden="true"></div>
+        <span id="status-message">Ready to generate study materials.</span>
+      </div>
+      <progress id="download-progress" value="0" max="100" hidden></progress>
+    </section>
+
+    <nav class="tab-list" role="tablist">
+      <button
+        id="tab-summary"
+        class="tab-button is-active"
+        data-tab="summary"
+        role="tab"
+        aria-selected="true"
+      >
+        <span class="tab-label">Summary</span>
+        <span class="tab-icon" aria-hidden="true"></span>
+      </button>
+      <button
+        id="tab-quiz"
+        class="tab-button"
+        data-tab="quiz"
+        role="tab"
+        aria-selected="false"
+      >
+        <span class="tab-label">Quiz</span>
+        <span class="tab-icon" aria-hidden="true"></span>
+      </button>
+      <button
+        id="tab-flashcard"
+        class="tab-button"
+        data-tab="flashcard"
+        role="tab"
+        aria-selected="false"
+      >
+        <span class="tab-label">Flashcards</span>
+        <span class="tab-icon" aria-hidden="true"></span>
+      </button>
+    </nav>
+
+    <main id="tab-content" class="tab-content">
+      <div
+        id="summary-view"
+        class="view is-active"
+        role="tabpanel"
+        aria-labelledby="tab-summary"
+        data-view="summary"
+      >
+        <div class="summary-container empty-state">
+          <p>No summary yet. Upload a PDF to get started.</p>
+        </div>
+      </div>
+
+      <div
+        id="quiz-view"
+        class="view"
+        role="tabpanel"
+        aria-labelledby="tab-quiz"
+        data-view="quiz"
+      >
+        <div id="quiz-container" class="quiz-container empty-state">
+          <p>No quiz yet. Upload a PDF to get started.</p>
+        </div>
+        <div class="quiz-controls">
+          <div class="quiz-controls__nav">
+            <button id="quiz-prev" disabled>← Previous</button>
+            <div class="quiz-status">
+              <span id="quiz-counter">0 / 0</span>
+            </div>
+            <button id="quiz-next" disabled>Next →</button>
+          </div>
+          <div class="quiz-controls__actions">
+            <button id="quiz-reset" disabled>Reset</button>
+            <button id="quiz-shuffle" disabled>Shuffle</button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="flashcard-view"
+        class="view"
+        role="tabpanel"
+        aria-labelledby="tab-flashcard"
+        data-view="flashcard"
+      >
+        <div class="flashcard-container empty-state">
+          <p>No flashcards yet. Upload a PDF to get started.</p>
+        </div>
+        <div class="flashcard-controls">
+          <div class="flashcard-controls__nav">
+            <button id="flashcard-prev" disabled>← Previous</button>
+            <div class="flashcard-status">
+              <span id="flashcard-counter">0 / 0</span>
+            </div>
+            <button id="flashcard-next" disabled>Next →</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="panel-footer">
+      <button
+        id="settings-button"
+        class="settings-button"
+        type="button"
+        aria-label="Open study settings"
+        aria-haspopup="dialog"
+        aria-controls="settings-toast"
+        aria-expanded="false"
+      >
+        <span class="sr-only">Open study settings</span>
+        <svg
+          class="settings-button__icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="3"></circle>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 3.5l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
+          ></path>
+        </svg>
+      </button>
+      <button
+        id="theme-toggle"
+        class="theme-toggle-button"
+        type="button"
+        aria-label="Toggle theme"
+        aria-pressed="false"
+      ></button>
+    </footer>
+
+    <div id="settings-backdrop" class="settings-backdrop hidden" aria-hidden="true"></div>
+
+    <section
+      id="settings-toast"
+      class="settings-toast hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="settings-title"
+    >
+      <header class="settings-toast__header">
+        <div>
+          <h2 id="settings-title">Study Settings</h2>
+          <p class="settings-toast__subtitle">Control how many quiz questions and flashcards are generated.</p>
+        </div>
+        <button
+          type="button"
+          class="settings-toast__close"
+          data-action="close-settings"
+          aria-label="Close settings"
+        ></button>
+      </header>
+
+      <div class="settings-toast__body">
+        <section class="settings-group">
+          <div class="settings-group__header">
+            <h3>How many quiz?</h3>
+            <p>Select the question count for each quiz run.</p>
+          </div>
+          <div class="settings-group__controls">
+            <label class="settings-radio">
+              <input
+                id="quiz-count-auto"
+                type="radio"
+                name="quiz-count-mode"
+                value="auto"
+                data-initial-focus
+              />
+              <span>Auto</span>
+            </label>
+            <label class="settings-radio">
+              <input id="quiz-count-custom" type="radio" name="quiz-count-mode" value="custom" />
+              <span>Choose number</span>
+            </label>
+            <select id="quiz-count-select" class="settings-select" aria-label="Quiz question count" disabled>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="settings-group">
+          <div class="settings-group__header">
+            <h3>How many flashcard?</h3>
+            <p>Choose how many flashcards to generate each time.</p>
+          </div>
+          <div class="settings-group__controls">
+            <label class="settings-radio">
+              <input id="flashcard-count-auto" type="radio" name="flashcard-count-mode" value="auto" />
+              <span>Auto</span>
+            </label>
+            <label class="settings-radio">
+              <input id="flashcard-count-custom" type="radio" name="flashcard-count-mode" value="custom" />
+              <span>Choose number</span>
+            </label>
+            <select
+              id="flashcard-count-select"
+              class="settings-select"
+              aria-label="Flashcard count"
+              disabled
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+        </section>
+      </div>
+
+      <footer class="settings-toast__footer">
+        <button type="button" class="settings-secondary" data-action="close-settings">Done</button>
+      </footer>
+    </section>
+
+    <script type="module" src="./panel.js"></script>
+  </body>
+</html>
